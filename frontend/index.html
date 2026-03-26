@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OAS System</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <div class="auth-shell landing-shell">
+      <section class="hero-card">
+        <p class="eyebrow">Online Assignment Submission and Tracking</p>
+        <h1>Submit faster, track clearly, grade smoothly.</h1>
+        <p class="hero-copy">
+          A clean portal for students and teachers to manage assignments, uploads, grading,
+          reminders, and performance in one place.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="/dashboard.html">Student Dashboard</a>
+          <a class="btn btn-secondary" href="/teacher.html">Teacher Dashboard</a>
+        </div>
+      </section>
+
+      <section class="auth-card">
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="login">Login</button>
+          <button class="tab-btn" data-tab="signup">Sign Up</button>
+        </div>
+
+        <form id="loginForm" class="form-panel active">
+          <h2>Login</h2>
+          <label>
+            Email
+            <input type="email" name="email" placeholder="Enter email" required />
+          </label>
+          <label>
+            Password
+            <input type="password" name="password" placeholder="Enter password" required />
+          </label>
+          <label>
+            Role
+            <select name="role" required>
+              <option value="student">Student</option>
+              <option value="teacher">Teacher</option>
+            </select>
+          </label>
+          <button class="btn btn-primary full-width" type="submit">Login</button>
+        </form>
+
+        <form id="signupForm" class="form-panel">
+          <h2>Create Account</h2>
+          <label>
+            Full Name
+            <input type="text" name="name" placeholder="Enter full name" required />
+          </label>
+          <label>
+            Email
+            <input type="email" name="email" placeholder="Enter email" required />
+          </label>
+          <label>
+            Password
+            <input type="password" name="password" placeholder="Minimum 6 characters" required />
+          </label>
+          <label>
+            Role
+            <select name="role" required>
+              <option value="student">Student</option>
+              <option value="teacher">Teacher</option>
+            </select>
+          </label>
+          <button class="btn btn-primary full-width" type="submit">Sign Up</button>
+        </form>
+
+        <p id="authMessage" class="message"></p>
+      </section>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/auth.js"></script>
+  </body>
+</html>

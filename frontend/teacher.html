@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teacher Dashboard</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body data-role="teacher">
+    <div class="page-shell">
+      <aside class="sidebar">
+        <h2>OAS Teacher</h2>
+        <p id="teacherWelcomeText">Welcome</p>
+        <button class="btn btn-secondary full-width" id="logoutBtn">Logout</button>
+      </aside>
+
+      <main class="main-content">
+        <header class="page-header">
+          <div>
+            <p class="eyebrow">Teacher Dashboard</p>
+            <h1>Create assignments and grade submissions</h1>
+            <p class="page-copy">Manage your course workflow with quick stats, focused review, and clearer assignment tracking.</p>
+          </div>
+        </header>
+
+        <section class="stats-grid" id="teacherStatsGrid"></section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Recent Activity</h2>
+          </div>
+          <div id="recentActivity" class="marks-list"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Create Assignment</h2>
+          </div>
+          <form id="assignmentForm" class="grid-form">
+            <label>
+              Title
+              <input type="text" name="title" required />
+            </label>
+            <label>
+              Subject
+              <input type="text" name="subject" required />
+            </label>
+            <label class="full-span">
+              Description
+              <textarea name="description" rows="4" required></textarea>
+            </label>
+            <label>
+              Due Date
+              <input type="datetime-local" name="dueDate" required />
+            </label>
+            <button class="btn btn-primary" type="submit">Create Assignment</button>
+          </form>
+          <p id="teacherMessage" class="message"></p>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Assignments and Submissions</h2>
+            <div class="toolbar">
+              <input id="teacherAssignmentSearch" type="search" placeholder="Search assignments..." />
+              <select id="teacherSubmissionFilter">
+                <option value="all">All Submissions</option>
+                <option value="pending">Pending</option>
+                <option value="submitted">Submitted</option>
+                <option value="graded">Graded</option>
+              </select>
+            </div>
+          </div>
+          <div id="teacherAssignments" class="teacher-assignment-list"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/teacher.js"></script>
+  </body>
+</html>
