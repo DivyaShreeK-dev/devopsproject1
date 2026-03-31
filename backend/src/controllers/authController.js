@@ -2,6 +2,7 @@ const User = require("../models/User");
 const Assignment = require("../models/Assignment");
 const Submission = require("../models/Submission");
 const generateToken = require("../utils/generateToken");
+const { validateSignupInput } = require("../utils/validators");
 
 const sanitizeUser = (user) => ({
   _id: user._id,
@@ -14,8 +15,16 @@ const signup = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-    if (!name || !email || !password || !role) {
-      return res.status(400).json({ success: false, message: "All fields are required" });
+    const validationError = validateSignupInput({ name, email, password, role });
+    if (validationError) {
+      return res.status(400).json({ success: false, message: validationError });
+    }
+
+    if (role === "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Admin accounts cannot be created from public signup"
+      });
     }
 
     const existingUser = await User.findOne({ email });
@@ -52,6 +61,10 @@ const signup = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password, role } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: "Email and password are required" });
+    }
 
     const user = await User.findOne({ email });
     if (!user) {

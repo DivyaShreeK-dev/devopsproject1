@@ -26,7 +26,12 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
     });
 
     saveSession(data.token, data.user);
-    window.location.href = data.user.role === "teacher" ? "/teacher.html" : "/dashboard.html";
+    window.location.href =
+      data.user.role === "teacher"
+        ? "/teacher.html"
+        : data.user.role === "admin"
+          ? "/admin.html"
+          : "/dashboard.html";
   } catch (error) {
     authMessage.textContent = error.message;
   }
@@ -45,7 +50,12 @@ document.getElementById("signupForm").addEventListener("submit", async (event) =
     });
 
     saveSession(data.token, data.user);
-    window.location.href = data.user.role === "teacher" ? "/teacher.html" : "/dashboard.html";
+    window.location.href =
+      data.user.role === "teacher"
+        ? "/teacher.html"
+        : data.user.role === "admin"
+          ? "/admin.html"
+          : "/dashboard.html";
   } catch (error) {
     authMessage.textContent = error.message;
   }

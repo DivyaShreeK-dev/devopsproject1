@@ -21,6 +21,9 @@
             <h1>Create assignments and grade submissions</h1>
             <p class="page-copy">Manage your course workflow with quick stats, focused review, and clearer assignment tracking.</p>
           </div>
+          <div class="inline-actions">
+            <button class="btn btn-secondary" id="exportReportBtn" type="button">Export CSV Report</button>
+          </div>
         </header>
 
         <section class="stats-grid" id="teacherStatsGrid"></section>
@@ -72,6 +75,7 @@
             </div>
           </div>
           <div id="teacherAssignments" class="teacher-assignment-list"></div>
+          <p id="teacherActionMessage" class="message"></p>
         </section>
       </main>
     </div>

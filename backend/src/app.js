@@ -9,6 +9,8 @@ const assignmentRoutes = require("./routes/assignmentRoutes");
 const submissionRoutes = require("./routes/submissionRoutes");
 const statsRoutes = require("./routes/statsRoutes");
 const reminderRoutes = require("./routes/reminderRoutes");
+const adminRoutes = require("./routes/adminRoutes");
+const alertRoutes = require("./routes/alertRoutes");
 
 dotenv.config();
 
@@ -31,6 +33,8 @@ app.use("/api/assignments", assignmentRoutes);
 app.use("/api/submissions", submissionRoutes);
 app.use("/api/stats", statsRoutes);
 app.use("/api/reminders", reminderRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/alerts", alertRoutes);
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "..", "frontend", "index.html"));

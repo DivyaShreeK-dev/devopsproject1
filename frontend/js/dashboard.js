@@ -95,45 +95,50 @@ function renderAssignments(assignments) {
 
       return `
         <article class="assignment-card">
-          <div class="card-top">
+          <div class="card-top compact-card-top">
             <div>
               <h3>${assignment.title}</h3>
               <p class="meta">${assignment.subject} • Due ${formatDate(assignment.dueDate)}</p>
             </div>
-            <div class="stacked-badges">
-              ${statusBadge(assignment.submissionStatus || "pending")}
-              ${urgency ? `<span class="status-pill ${urgency.className}">${urgency.label}</span>` : ""}
+            <div class="inline-actions compact-actions">
+              <div class="stacked-badges">
+                ${statusBadge(assignment.submissionStatus || "pending")}
+                ${urgency ? `<span class="status-pill ${urgency.className}">${urgency.label}</span>` : ""}
+              </div>
+              <button class="btn btn-secondary toggle-details-btn" type="button">View Details</button>
             </div>
           </div>
-          <p>${assignment.description}</p>
-          <form class="upload-form" data-assignment-id="${assignment._id}">
-            <label>
-              Upload PDF or DOC
-              <input type="file" name="assignmentFile" accept=".pdf,.doc,.docx" />
-            </label>
-            <button class="btn btn-primary" type="submit">Submit Assignment</button>
-          </form>
-          ${
-            submission && submission.fileUrl
-              ? `
-                <div class="inline-actions">
-                  <a class="btn btn-secondary" href="${submission.fileUrl}" target="_blank" rel="noreferrer">
-                    ${isPdf ? "Open PDF Preview" : "Download File"}
-                  </a>
-                </div>
-                ${
-                  isPdf
-                    ? `<iframe class="preview-frame" src="${submission.fileUrl}" title="PDF preview"></iframe>`
-                    : ""
-                }
-              `
-              : ""
-          }
-          ${
-            submission && submission.status === "graded"
-              ? `<p class="meta">Marks: ${submission.marks ?? "-"} | Feedback: ${submission.feedback || "No feedback"}</p>`
-              : ""
-          }
+          <div class="assignment-details hidden">
+            <p>${assignment.description}</p>
+            <form class="upload-form" data-assignment-id="${assignment._id}">
+              <label>
+                Upload PDF or DOC
+                <input type="file" name="assignmentFile" accept=".pdf,.doc,.docx" />
+              </label>
+              <button class="btn btn-primary" type="submit">Submit Assignment</button>
+            </form>
+            ${
+              submission && submission.fileUrl
+                ? `
+                  <div class="inline-actions">
+                    <a class="btn btn-secondary" href="${submission.fileUrl}" target="_blank" rel="noreferrer">
+                      ${isPdf ? "Open PDF Preview" : "Download File"}
+                    </a>
+                  </div>
+                  ${
+                    isPdf
+                      ? `<iframe class="preview-frame" src="${submission.fileUrl}" title="PDF preview"></iframe>`
+                      : ""
+                  }
+                `
+                : ""
+            }
+            ${
+              submission && submission.status === "graded"
+                ? `<p class="meta">Marks: ${submission.marks ?? "-"} | Feedback: ${submission.feedback || "No feedback"}</p>`
+                : ""
+            }
+          </div>
         </article>
       `;
     })
@@ -141,6 +146,16 @@ function renderAssignments(assignments) {
 
   document.querySelectorAll(".upload-form").forEach((form) => {
     form.addEventListener("submit", handleUpload);
+  });
+
+  document.querySelectorAll(".toggle-details-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+      const card = button.closest(".assignment-card");
+      const details = card.querySelector(".assignment-details");
+      const isHidden = details.classList.contains("hidden");
+      details.classList.toggle("hidden");
+      button.textContent = isHidden ? "Hide Details" : "View Details";
+    });
   });
 }
 

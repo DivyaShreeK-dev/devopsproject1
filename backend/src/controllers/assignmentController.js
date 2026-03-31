@@ -1,13 +1,15 @@
 const Assignment = require("../models/Assignment");
 const Submission = require("../models/Submission");
 const User = require("../models/User");
+const { validateAssignmentInput } = require("../utils/validators");
 
 const createAssignment = async (req, res) => {
   try {
     const { title, description, subject, dueDate } = req.body;
 
-    if (!title || !description || !subject || !dueDate) {
-      return res.status(400).json({ success: false, message: "All fields are required" });
+    const validationError = validateAssignmentInput({ title, description, subject, dueDate });
+    if (validationError) {
+      return res.status(400).json({ success: false, message: validationError });
     }
 
     const assignment = await Assignment.create({
@@ -35,6 +37,56 @@ const createAssignment = async (req, res) => {
       message: "Assignment created successfully",
       assignment: populated
     });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const updateAssignment = async (req, res) => {
+  try {
+    const { title, description, subject, dueDate } = req.body;
+    const validationError = validateAssignmentInput({ title, description, subject, dueDate });
+    if (validationError) {
+      return res.status(400).json({ success: false, message: validationError });
+    }
+
+    const assignment = await Assignment.findById(req.params.id);
+    if (!assignment) {
+      return res.status(404).json({ success: false, message: "Assignment not found" });
+    }
+
+    if (String(assignment.createdBy) !== String(req.user._id)) {
+      return res.status(403).json({ success: false, message: "You can edit only your own assignments" });
+    }
+
+    assignment.title = title;
+    assignment.description = description;
+    assignment.subject = subject;
+    assignment.dueDate = dueDate;
+    await assignment.save();
+
+    const populated = await Assignment.findById(assignment._id).populate("createdBy", "name email");
+    res.json({ success: true, message: "Assignment updated successfully", assignment: populated });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const deleteAssignment = async (req, res) => {
+  try {
+    const assignment = await Assignment.findById(req.params.id);
+    if (!assignment) {
+      return res.status(404).json({ success: false, message: "Assignment not found" });
+    }
+
+    if (String(assignment.createdBy) !== String(req.user._id)) {
+      return res.status(403).json({ success: false, message: "You can delete only your own assignments" });
+    }
+
+    await Submission.deleteMany({ assignment: assignment._id });
+    await assignment.deleteOne();
+
+    res.json({ success: true, message: "Assignment deleted successfully" });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -95,4 +147,10 @@ const getAssignmentById = async (req, res) => {
   }
 };
 
-module.exports = { createAssignment, listAssignments, getAssignmentById };
+module.exports = {
+  createAssignment,
+  listAssignments,
+  getAssignmentById,
+  updateAssignment,
+  deleteAssignment
+};

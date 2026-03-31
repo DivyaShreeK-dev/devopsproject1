@@ -3,6 +3,7 @@ const connectDB = require("../config/db");
 const User = require("../models/User");
 const Assignment = require("../models/Assignment");
 const Submission = require("../models/Submission");
+const Alert = require("../models/Alert");
 
 dotenv.config();
 
@@ -11,9 +12,16 @@ const seed = async () => {
 
   await Submission.deleteMany({});
   await Assignment.deleteMany({});
+  await Alert.deleteMany({});
   await User.deleteMany({});
 
-  const [teacher, studentOne, studentTwo] = await User.create([
+  const [admin, teacher, studentOne, studentTwo] = await User.create([
+    {
+      name: "System Admin",
+      email: "admin1@example.com",
+      password: "password123",
+      role: "admin"
+    },
     {
       name: "Asha Teacher",
       email: "teacher1@example.com",
@@ -78,6 +86,16 @@ const seed = async () => {
       assignment: assignments[1]._id,
       student: studentTwo._id,
       status: "pending"
+    }
+  ]);
+
+  await Alert.create([
+    {
+      title: "Welcome to OAS",
+      message: "Check upcoming deadlines regularly and upload your files before the due date.",
+      type: "announcement",
+      targetRole: "student",
+      createdBy: admin._id
     }
   ]);
 

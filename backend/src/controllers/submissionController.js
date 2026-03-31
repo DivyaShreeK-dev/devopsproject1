@@ -85,4 +85,51 @@ const getStudentSubmissions = async (req, res) => {
   }
 };
 
-module.exports = { uploadSubmission, gradeSubmission, getStudentSubmissions };
+const exportSubmissionsReport = async (req, res) => {
+  try {
+    const submissions = await Submission.find()
+      .populate("assignment")
+      .populate("student", "name email")
+      .sort({ updatedAt: -1 });
+
+    const rows = [
+      [
+        "Assignment Title",
+        "Student Name",
+        "Student Email",
+        "Status",
+        "Marks",
+        "Feedback",
+        "Submitted At",
+        "Updated At"
+      ],
+      ...submissions.map((item) => [
+        item.assignment ? item.assignment.title : "",
+        item.student ? item.student.name : "",
+        item.student ? item.student.email : "",
+        item.status,
+        item.marks ?? "",
+        (item.feedback || "").replace(/"/g, '""'),
+        item.submittedAt ? new Date(item.submittedAt).toISOString() : "",
+        item.updatedAt ? new Date(item.updatedAt).toISOString() : ""
+      ])
+    ];
+
+    const csv = rows
+      .map((row) => row.map((cell) => `"${String(cell ?? "").replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader("Content-Disposition", 'attachment; filename="submission-report.csv"');
+    res.send(csv);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+module.exports = {
+  uploadSubmission,
+  gradeSubmission,
+  getStudentSubmissions,
+  exportSubmissionsReport
+};
