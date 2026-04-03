@@ -15,45 +15,33 @@
       </aside>
 
       <main class="main-content">
-        <header class="page-header">
-          <div>
-            <p class="eyebrow">Student Dashboard</p>
-            <h1>Track your assignments and marks</h1>
-            <p class="page-copy">See deadlines early, filter your work quickly, and keep an eye on your performance.</p>
+        <section class="dashboard-hero student-theme">
+          <div class="dashboard-hero-top">
+            <h1>Welcome <span id="studentHeroName">Student</span></h1>
           </div>
-        </header>
-
-        <section id="reminderBanner" class="reminder-banner hidden"></section>
-
-        <section class="stats-grid" id="statsGrid"></section>
-
-        <section class="panel">
-          <div class="panel-header">
-            <h2>Assignments</h2>
-            <div class="toolbar">
-              <input id="assignmentSearch" type="search" placeholder="Search assignments..." />
-              <select id="assignmentFilter">
-                <option value="all">All Status</option>
-                <option value="pending">Pending</option>
-                <option value="submitted">Submitted</option>
-                <option value="graded">Graded</option>
-              </select>
-            </div>
+          <div class="dashboard-hero-strip">
+            <h2>Student Dashboard</h2>
           </div>
-          <div id="assignmentsContainer" class="assignment-grid"></div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-header">
-            <h2>Marks Overview</h2>
+          <div class="quick-grid">
+            <a class="quick-card" href="/student-overview.html">
+              <span class="quick-circle">Overview</span>
+            </a>
+            <a class="quick-card" href="/student-assignments.html">
+              <span class="quick-circle">Assignments</span>
+            </a>
+            <a class="quick-card" href="/student-submit.html">
+              <span class="quick-circle">Submit Work</span>
+            </a>
+            <a class="quick-card" href="/student-marks.html">
+              <span class="quick-circle">My Marks</span>
+            </a>
           </div>
-          <div id="marksOverview" class="marks-list"></div>
         </section>
       </main>
     </div>
 
     <script src="/js/api.js"></script>
     <script src="/js/common.js"></script>
-    <script src="/js/dashboard.js"></script>
+    <script src="/js/studentHome.js"></script>
   </body>
 </html>

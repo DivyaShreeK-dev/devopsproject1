@@ -1,6 +1,8 @@
 const teacher = requireRole("teacher");
-document.getElementById("teacherWelcomeText").textContent = `Welcome, ${teacher.name}`;
 
+const teacherView = document.body.dataset.teacherView || "review";
+const teacherWelcomeText = document.getElementById("teacherWelcomeText");
+const teacherHeroName = document.getElementById("teacherHeroName");
 const assignmentForm = document.getElementById("assignmentForm");
 const teacherAssignments = document.getElementById("teacherAssignments");
 const teacherMessage = document.getElementById("teacherMessage");
@@ -9,45 +11,76 @@ const teacherStatsGrid = document.getElementById("teacherStatsGrid");
 const recentActivity = document.getElementById("recentActivity");
 const teacherAssignmentSearch = document.getElementById("teacherAssignmentSearch");
 const teacherSubmissionFilter = document.getElementById("teacherSubmissionFilter");
-const exportReportBtn = document.getElementById("exportReportBtn");
+const exportReportBtn = document.getElementById("quickExportBtn");
+
+if (teacherWelcomeText) {
+  teacherWelcomeText.textContent = `Welcome, ${teacher.name}`;
+}
+if (teacherHeroName) {
+  teacherHeroName.textContent = teacher.name;
+}
 
 let assignmentRecords = [];
 
-assignmentForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  teacherMessage.textContent = "Creating assignment...";
+if (assignmentForm) {
+  assignmentForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (teacherMessage) {
+      teacherMessage.textContent = "Creating assignment...";
+    }
 
-  try {
-    const payload = Object.fromEntries(new FormData(event.target).entries());
-    const data = await API.request("/api/assignments", {
-      method: "POST",
-      body: JSON.stringify(payload)
-    });
+    try {
+      const payload = Object.fromEntries(new FormData(event.target).entries());
+      const data = await API.request("/api/assignments", {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
 
-    teacherMessage.textContent = data.message;
-    assignmentForm.reset();
-    loadTeacherDashboard();
-  } catch (error) {
-    teacherMessage.textContent = error.message;
-  }
-});
+      if (teacherMessage) {
+        teacherMessage.textContent = data.message;
+      }
+      assignmentForm.reset();
+    } catch (error) {
+      if (teacherMessage) {
+        teacherMessage.textContent = error.message;
+      }
+    }
+  });
+}
 
 async function loadTeacherDashboard() {
   try {
-    const [data, statsData] = await Promise.all([
+    const [assignmentsData, statsData] = await Promise.all([
       API.request("/api/assignments"),
       API.request("/api/stats/teacher")
     ]);
-    const detailedAssignments = await Promise.all(
-      data.assignments.map((assignment) => API.request(`/api/assignments/${assignment._id}`))
-    );
 
-    assignmentRecords = detailedAssignments;
-    renderTeacherStats(statsData.stats);
-    renderRecentActivity(statsData.stats.recentActivity);
-    applyTeacherFilters();
+    if (teacherStatsGrid) {
+      renderTeacherStats(statsData.stats);
+    }
+
+    if (recentActivity) {
+      renderRecentActivity(statsData.stats.recentActivity);
+    }
+
+    if (teacherAssignments) {
+      const detailedAssignments = await Promise.all(
+        assignmentsData.assignments.map((assignment) => API.request(`/api/assignments/${assignment._id}`))
+      );
+
+      assignmentRecords = detailedAssignments;
+      applyTeacherFilters();
+    }
   } catch (error) {
-    teacherAssignments.innerHTML = `<p class="message">${error.message}</p>`;
+    if (teacherAssignments) {
+      teacherAssignments.innerHTML = `<p class="message">${error.message}</p>`;
+    }
+    if (teacherMessage) {
+      teacherMessage.textContent = error.message;
+    }
+    if (teacherActionMessage) {
+      teacherActionMessage.textContent = error.message;
+    }
   }
 }
 
@@ -93,6 +126,10 @@ function renderRecentActivity(items) {
 }
 
 function renderTeacherAssignments(records) {
+  if (!teacherAssignments) {
+    return;
+  }
+
   if (!records.length) {
     teacherAssignments.innerHTML = "<p class='meta'>No assignments match your current filters.</p>";
     return;
@@ -142,42 +179,42 @@ function renderTeacherAssignments(records) {
               submissions.length
                 ? submissions
                     .map((submission) => {
-                    const previewLink = submission.fileUrl
-                      ? `<a class="btn btn-secondary" href="${submission.fileUrl}" target="_blank" rel="noreferrer">View File</a>`
-                      : "";
+                      const previewLink = submission.fileUrl
+                        ? `<a class="btn btn-secondary" href="${submission.fileUrl}" target="_blank" rel="noreferrer">View File</a>`
+                        : "";
 
-                    const canGrade = Boolean(submission.fileUrl);
+                      const canGrade = Boolean(submission.fileUrl);
 
-                    return `
-                      <div class="submission-card">
-                        <div class="card-top">
-                          <div>
-                            <h4>${submission.student.name}</h4>
-                            <p class="meta">${submission.student.email}</p>
+                      return `
+                        <div class="submission-card">
+                          <div class="card-top">
+                            <div>
+                              <h4>${submission.student.name}</h4>
+                              <p class="meta">${submission.student.email}</p>
+                            </div>
+                            ${statusBadge(submission.status)}
                           </div>
-                          ${statusBadge(submission.status)}
+                          <p class="meta">Submitted: ${submission.submittedAt ? formatDate(submission.submittedAt) : "Not yet submitted"}</p>
+                          <div class="inline-actions">${previewLink}</div>
+                          ${
+                            canGrade
+                              ? `
+                                <form class="grade-form" data-submission-id="${submission._id}">
+                                  <label>
+                                    Marks
+                                    <input type="number" name="marks" min="0" max="100" value="${submission.marks ?? ""}" required />
+                                  </label>
+                                  <label>
+                                    Feedback
+                                    <textarea name="feedback" rows="3">${submission.feedback || ""}</textarea>
+                                  </label>
+                                  <button class="btn btn-primary" type="submit">Save Grade</button>
+                                </form>
+                              `
+                              : "<p class='meta'>Waiting for student upload before grading.</p>"
+                          }
                         </div>
-                        <p class="meta">Submitted: ${submission.submittedAt ? formatDate(submission.submittedAt) : "Not yet submitted"}</p>
-                        <div class="inline-actions">${previewLink}</div>
-                        ${
-                          canGrade
-                            ? `
-                              <form class="grade-form" data-submission-id="${submission._id}">
-                                <label>
-                                  Marks
-                                  <input type="number" name="marks" min="0" max="100" value="${submission.marks ?? ""}" required />
-                                </label>
-                                <label>
-                                  Feedback
-                                  <textarea name="feedback" rows="3">${submission.feedback || ""}</textarea>
-                                </label>
-                                <button class="btn btn-primary" type="submit">Save Grade</button>
-                              </form>
-                            `
-                            : "<p class='meta'>Waiting for student upload before grading.</p>"
-                        }
-                      </div>
-                    `;
+                      `;
                     })
                     .join("")
                 : "<p class='meta'>No submissions for the current filter.</p>"
@@ -242,6 +279,10 @@ function renderAssignmentProgress(submissions) {
 }
 
 function applyTeacherFilters() {
+  if (!teacherAssignments || !teacherAssignmentSearch || !teacherSubmissionFilter) {
+    return;
+  }
+
   const query = teacherAssignmentSearch.value.trim().toLowerCase();
   const selectedStatus = teacherSubmissionFilter.value;
 
@@ -281,7 +322,9 @@ async function handleGradeSubmit(event) {
     });
     loadTeacherDashboard();
   } catch (error) {
-    alert(error.message);
+    if (teacherActionMessage) {
+      teacherActionMessage.textContent = error.message;
+    }
   }
 }
 
@@ -296,10 +339,14 @@ async function handleAssignmentEdit(event) {
       method: "PATCH",
       body: JSON.stringify(payload)
     });
-    teacherActionMessage.textContent = data.message;
+    if (teacherActionMessage) {
+      teacherActionMessage.textContent = data.message;
+    }
     loadTeacherDashboard();
   } catch (error) {
-    teacherActionMessage.textContent = error.message;
+    if (teacherActionMessage) {
+      teacherActionMessage.textContent = error.message;
+    }
   }
 }
 
@@ -313,33 +360,16 @@ async function handleAssignmentDelete(assignmentId) {
     const data = await API.request(`/api/assignments/${assignmentId}`, {
       method: "DELETE"
     });
-    teacherActionMessage.textContent = data.message;
+    if (teacherActionMessage) {
+      teacherActionMessage.textContent = data.message;
+    }
     loadTeacherDashboard();
   } catch (error) {
-    teacherActionMessage.textContent = error.message;
+    if (teacherActionMessage) {
+      teacherActionMessage.textContent = error.message;
+    }
   }
 }
-
-function toDateTimeLocal(value) {
-  const date = new Date(value);
-  const offset = date.getTimezoneOffset();
-  const localDate = new Date(date.getTime() - offset * 60000);
-  return localDate.toISOString().slice(0, 16);
-}
-
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
-}
-
-loadTeacherDashboard();
-
-teacherAssignmentSearch.addEventListener("input", applyTeacherFilters);
-teacherSubmissionFilter.addEventListener("change", applyTeacherFilters);
-exportReportBtn.addEventListener("click", downloadCsvReport);
 
 async function downloadCsvReport() {
   const token = localStorage.getItem("oas_token");
@@ -365,8 +395,41 @@ async function downloadCsvReport() {
     anchor.click();
     anchor.remove();
     window.URL.revokeObjectURL(url);
-    teacherActionMessage.textContent = "CSV report downloaded successfully.";
+    if (teacherActionMessage) {
+      teacherActionMessage.textContent = "CSV report downloaded successfully.";
+    }
   } catch (error) {
-    teacherActionMessage.textContent = error.message;
+    if (teacherActionMessage) {
+      teacherActionMessage.textContent = error.message;
+    }
   }
+}
+
+function toDateTimeLocal(value) {
+  const date = new Date(value);
+  const offset = date.getTimezoneOffset();
+  const localDate = new Date(date.getTime() - offset * 60000);
+  return localDate.toISOString().slice(0, 16);
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+loadTeacherDashboard();
+
+if (teacherAssignmentSearch) {
+  teacherAssignmentSearch.addEventListener("input", applyTeacherFilters);
+}
+
+if (teacherSubmissionFilter) {
+  teacherSubmissionFilter.addEventListener("change", applyTeacherFilters);
+}
+
+if (exportReportBtn) {
+  exportReportBtn.addEventListener("click", downloadCsvReport);
 }

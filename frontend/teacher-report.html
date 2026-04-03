@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teacher Reports</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body data-role="teacher" data-teacher-view="report">
+    <div class="page-shell">
+      <aside class="sidebar">
+        <h2>OAS Teacher</h2>
+        <p id="teacherWelcomeText">Welcome</p>
+        <button class="btn btn-secondary full-width" id="logoutBtn">Logout</button>
+      </aside>
+      <main class="main-content">
+        <header class="page-header">
+          <div>
+            <p class="eyebrow">Teacher</p>
+            <h1>Submission Report</h1>
+            <p class="page-copy">Download a CSV report of all submissions, marks, feedback, and timestamps.</p>
+          </div>
+        </header>
+        <section class="panel">
+          <div class="panel-header"><h2>Export</h2></div>
+          <p class="meta">Use the button below to download the latest submission report as CSV.</p>
+          <div class="inline-actions">
+            <button class="btn btn-primary" id="quickExportBtn" type="button">Download CSV Report</button>
+          </div>
+          <p id="teacherActionMessage" class="message"></p>
+        </section>
+      </main>
+    </div>
+    <script src="/js/api.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/teacher.js"></script>
+  </body>
+</html>

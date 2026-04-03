@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assignment Report</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body data-role="teacher">
+    <div class="page-shell">
+      <aside class="sidebar">
+        <h2>OAS Teacher</h2>
+        <p id="teacherWelcomeText">Welcome</p>
+        <button class="btn btn-secondary full-width" id="logoutBtn">Logout</button>
+      </aside>
+      <main class="main-content">
+        <header class="page-header">
+          <div>
+            <p class="eyebrow">Teacher</p>
+            <h1>Assignment Report</h1>
+            <p class="page-copy">See completion and grading progress for each assignment.</p>
+          </div>
+        </header>
+        <section class="panel">
+          <div class="panel-header"><h2>Assignment Summary</h2></div>
+          <div id="assignmentReportContainer" class="marks-list"></div>
+        </section>
+      </main>
+    </div>
+    <script src="/js/api.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/teacherExtras.js"></script>
+  </body>
+</html>

@@ -15,73 +15,45 @@
       </aside>
 
       <main class="main-content">
-        <header class="page-header">
-          <div>
-            <p class="eyebrow">Teacher Dashboard</p>
-            <h1>Create assignments and grade submissions</h1>
-            <p class="page-copy">Manage your course workflow with quick stats, focused review, and clearer assignment tracking.</p>
+        <section class="dashboard-hero teacher-theme">
+          <div class="dashboard-hero-top">
+            <h1>Welcome <span id="teacherHeroName">Teacher</span></h1>
           </div>
-          <div class="inline-actions">
-            <button class="btn btn-secondary" id="exportReportBtn" type="button">Export CSV Report</button>
+          <div class="dashboard-hero-strip">
+            <h2>Teacher Dashboard</h2>
           </div>
-        </header>
-
-        <section class="stats-grid" id="teacherStatsGrid"></section>
-
-        <section class="panel">
-          <div class="panel-header">
-            <h2>Recent Activity</h2>
+          <div class="quick-grid">
+            <a class="quick-card" href="/teacher-create.html">
+              <span class="quick-circle">Add Assignment</span>
+            </a>
+            <a class="quick-card" href="/teacher-add-subject.html">
+              <span class="quick-circle">Add Subject</span>
+            </a>
+            <a class="quick-card" href="/teacher-review.html">
+              <span class="quick-circle">Review Student Work</span>
+            </a>
+            <a class="quick-card" href="/teacher-submitted.html">
+              <span class="quick-circle">Submitted Assignment</span>
+            </a>
+            <a class="quick-card" href="/teacher-report.html">
+              <span class="quick-circle">Export CSV</span>
+            </a>
+            <a class="quick-card" href="/teacher-subject-report.html">
+              <span class="quick-circle">Subject Report</span>
+            </a>
+            <a class="quick-card" href="/teacher-student-report.html">
+              <span class="quick-circle">Student Report</span>
+            </a>
+            <a class="quick-card" href="/teacher-account.html">
+              <span class="quick-circle">My Account</span>
+            </a>
           </div>
-          <div id="recentActivity" class="marks-list"></div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-header">
-            <h2>Create Assignment</h2>
-          </div>
-          <form id="assignmentForm" class="grid-form">
-            <label>
-              Title
-              <input type="text" name="title" required />
-            </label>
-            <label>
-              Subject
-              <input type="text" name="subject" required />
-            </label>
-            <label class="full-span">
-              Description
-              <textarea name="description" rows="4" required></textarea>
-            </label>
-            <label>
-              Due Date
-              <input type="datetime-local" name="dueDate" required />
-            </label>
-            <button class="btn btn-primary" type="submit">Create Assignment</button>
-          </form>
-          <p id="teacherMessage" class="message"></p>
-        </section>
-
-        <section class="panel">
-          <div class="panel-header">
-            <h2>Assignments and Submissions</h2>
-            <div class="toolbar">
-              <input id="teacherAssignmentSearch" type="search" placeholder="Search assignments..." />
-              <select id="teacherSubmissionFilter">
-                <option value="all">All Submissions</option>
-                <option value="pending">Pending</option>
-                <option value="submitted">Submitted</option>
-                <option value="graded">Graded</option>
-              </select>
-            </div>
-          </div>
-          <div id="teacherAssignments" class="teacher-assignment-list"></div>
-          <p id="teacherActionMessage" class="message"></p>
         </section>
       </main>
     </div>
 
     <script src="/js/api.js"></script>
     <script src="/js/common.js"></script>
-    <script src="/js/teacher.js"></script>
+    <script src="/js/teacherHome.js"></script>
   </body>
 </html>

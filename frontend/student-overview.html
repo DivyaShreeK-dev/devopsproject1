@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Overview</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body data-role="student" data-student-view="overview">
+    <div class="page-shell student-overview-layout">
+      <aside class="sidebar student-sidebar">
+        <div class="student-sidebar-top"></div>
+        <div class="student-profile-card">
+          <h2>OAS Student</h2>
+          <p id="welcomeText">Welcome</p>
+          <div class="inline-actions">
+            <a class="sidebar-link active" href="/student-overview.html">Dashboard</a>
+            <a class="sidebar-link" href="/student-assignments.html">Assignments</a>
+            <a class="sidebar-link" href="/student-submit.html">Submit Work</a>
+            <a class="sidebar-link" href="/student-marks.html">My Marks</a>
+          </div>
+          <button class="btn btn-secondary full-width" id="logoutBtn">Logout</button>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Student Dashboard</p>
+            <h1>Welcome, <span id="studentHeroName">Student</span></h1>
+          </div>
+        </header>
+
+        <section id="statsSection" class="stats-grid student-stat-grid"></section>
+
+        <section class="student-overview-grid">
+          <section class="panel panel-wide">
+            <div class="panel-header">
+              <h2>Recent Submissions</h2>
+            </div>
+            <div id="studentRecentTable" class="dashboard-table"></div>
+          </section>
+
+          <section class="student-side-stack">
+            <section class="panel">
+              <div class="panel-header">
+                <h2>Upcoming Deadline</h2>
+              </div>
+              <div id="studentDeadlineCard" class="marks-list"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <h2>Recent Status</h2>
+              </div>
+              <div id="studentRecentActivity" class="marks-list"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <h2>Quick Access</h2>
+              </div>
+              <div class="mini-quick-grid">
+                <a class="mini-quick-card" href="/student-assignments.html">View Assignments</a>
+                <a class="mini-quick-card" href="/student-submit.html">Submit Work</a>
+                <a class="mini-quick-card" href="/student-marks.html">My Marks</a>
+                <a class="mini-quick-card" href="/dashboard.html">Notifications</a>
+              </div>
+            </section>
+          </section>
+        </section>
+
+        <section class="panel" id="marksSection">
+          <div class="panel-header">
+            <h2>Marks Overview</h2>
+          </div>
+          <div id="marksOverview" class="marks-list"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Student Quick Tiles</h2>
+          </div>
+          <div class="mini-quick-grid">
+            <a class="mini-quick-card" href="/student-assignments.html">Assignments</a>
+            <a class="mini-quick-card" href="/student-submit.html">Submit Assignment</a>
+            <a class="mini-quick-card" href="/student-marks.html">My Marks</a>
+            <a class="mini-quick-card" href="/dashboard.html">Dashboard Menu</a>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/dashboard.js"></script>
+  </body>
+</html>

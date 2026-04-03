@@ -1,10 +1,18 @@
 const user = requireRole("student");
 document.getElementById("welcomeText").textContent = `Welcome, ${user.name}`;
+const studentHeroName = document.getElementById("studentHeroName");
+if (studentHeroName) {
+  studentHeroName.textContent = user.name;
+}
+const studentView = document.body.dataset.studentView || "overview";
 
-const statsGrid = document.getElementById("statsGrid");
+const statsGrid = document.getElementById("statsSection");
 const assignmentsContainer = document.getElementById("assignmentsContainer");
 const marksOverview = document.getElementById("marksOverview");
 const reminderBanner = document.getElementById("reminderBanner");
+const studentRecentActivity = document.getElementById("studentRecentActivity");
+const studentRecentTable = document.getElementById("studentRecentTable");
+const studentDeadlineCard = document.getElementById("studentDeadlineCard");
 const assignmentSearch = document.getElementById("assignmentSearch");
 const assignmentFilter = document.getElementById("assignmentFilter");
 
@@ -18,28 +26,52 @@ async function loadDashboard() {
       API.request("/api/reminders/upcoming")
     ]);
 
-    renderStats(statsData.stats);
+    if (statsGrid) {
+      renderStats(statsData.stats);
+    }
     allAssignments = assignmentsData.assignments;
-    renderAssignments(allAssignments);
-    renderMarks(statsData.stats.marksOverview);
-    renderReminders(reminderData.reminders);
+    applyInitialFilters();
+    if (marksOverview) {
+      renderMarks(statsData.stats.marksOverview);
+    }
+    if (studentRecentActivity) {
+      renderRecentActivity(assignmentsData.assignments);
+    }
+    if (studentRecentTable) {
+      renderRecentTable(assignmentsData.assignments);
+    }
+    if (studentDeadlineCard) {
+      renderDeadlineCard(reminderData.reminders, assignmentsData.assignments);
+    }
+    if (reminderBanner) {
+      renderReminders(reminderData.reminders);
+    }
   } catch (error) {
-    assignmentsContainer.innerHTML = `<p class="message">${error.message}</p>`;
+    if (assignmentsContainer) {
+      assignmentsContainer.innerHTML = `<p class="message">${error.message}</p>`;
+    }
+    if (marksOverview) {
+      marksOverview.innerHTML = `<p class="message">${error.message}</p>`;
+    }
   }
 }
 
 function renderStats(stats) {
+  if (!statsGrid) {
+    return;
+  }
+
   const cards = [
-    { label: "Total Assignments", value: stats.totalAssignments },
-    { label: "Completed", value: stats.completed },
-    { label: "Pending", value: stats.pending },
-    { label: "Average Marks", value: stats.averageMarks }
+    { label: "Total Assignments", value: stats.totalAssignments, tone: "tone-blue" },
+    { label: "Completed", value: stats.completed, tone: "tone-green" },
+    { label: "Pending", value: stats.pending, tone: "tone-amber" },
+    { label: "Average Marks", value: `${stats.averageMarks}%`, tone: "tone-cyan" }
   ];
 
   statsGrid.innerHTML = cards
     .map(
       (card) => `
-      <article class="stat-card">
+      <article class="stat-card ${card.tone}">
         <h3>${card.label}</h3>
         <strong>${card.value}</strong>
       </article>
@@ -49,6 +81,10 @@ function renderStats(stats) {
 }
 
 function renderReminders(reminders) {
+  if (!reminderBanner) {
+    return;
+  }
+
   if (!reminders.length) {
     reminderBanner.classList.add("hidden");
     return;
@@ -61,6 +97,10 @@ function renderReminders(reminders) {
 }
 
 function renderMarks(marks) {
+  if (!marksOverview) {
+    return;
+  }
+
   if (!marks.length) {
     marksOverview.innerHTML = "<p class='meta'>No graded assignments yet.</p>";
     return;
@@ -82,6 +122,10 @@ function renderMarks(marks) {
 }
 
 function renderAssignments(assignments) {
+  if (!assignmentsContainer) {
+    return;
+  }
+
   if (!assignments.length) {
     assignmentsContainer.innerHTML = "<p class='meta'>No assignments match your current filters.</p>";
     return;
@@ -159,6 +203,155 @@ function renderAssignments(assignments) {
   });
 }
 
+function renderRecentActivity(assignments) {
+  if (!studentRecentActivity) {
+    return;
+  }
+
+  const recentItems = [];
+
+  assignments.forEach((assignment) => {
+    const submission = assignment.submission;
+
+    if (submission && submission.submittedAt) {
+      recentItems.push({
+        title: assignment.title,
+        status: submission.status,
+        date: submission.gradedAt || submission.submittedAt,
+        message:
+          submission.status === "graded"
+            ? `Graded with marks ${submission.marks ?? "-"}`
+            : "Assignment submitted successfully"
+      });
+    } else {
+      const dueDate = new Date(assignment.dueDate);
+      if (dueDate.getTime() >= Date.now() - 24 * 60 * 60 * 1000) {
+        recentItems.push({
+          title: assignment.title,
+          status: "pending",
+          date: assignment.dueDate,
+          message: "Assignment is active and waiting for submission"
+        });
+      }
+    }
+  });
+
+  recentItems.sort((a, b) => new Date(b.date) - new Date(a.date));
+  const itemsToShow = recentItems.slice(0, 5);
+
+  if (!itemsToShow.length) {
+    studentRecentActivity.innerHTML = "<p class='meta'>No recent activity yet.</p>";
+    return;
+  }
+
+  studentRecentActivity.innerHTML = itemsToShow
+    .map(
+      (item) => `
+        <article class="mark-card">
+          <div class="card-top">
+            <div>
+              <h3>${item.title}</h3>
+              <p class="meta">${item.message}</p>
+            </div>
+            ${statusBadge(item.status)}
+          </div>
+          <p class="meta">${formatDate(item.date)}</p>
+        </article>
+      `
+    )
+    .join("");
+}
+
+function renderRecentTable(assignments) {
+  if (!studentRecentTable) {
+    return;
+  }
+
+  const rows = assignments
+    .map((assignment) => {
+      const submission = assignment.submission;
+      if (!submission) {
+        return {
+          subject: assignment.subject,
+          status: "pending",
+          marks: "-",
+          date: assignment.dueDate
+        };
+      }
+
+      return {
+        subject: assignment.subject,
+        status: submission.status,
+        marks: submission.marks ?? "-",
+        date: submission.gradedAt || submission.submittedAt || assignment.dueDate
+      };
+    })
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 5);
+
+  if (!rows.length) {
+    studentRecentTable.innerHTML = "<p class='meta'>No submissions yet.</p>";
+    return;
+  }
+
+  studentRecentTable.innerHTML = `
+    <div class="table-card">
+      <div class="table-head">
+        <span>Subject</span>
+        <span>Status</span>
+        <span>Marks</span>
+      </div>
+      ${rows
+        .map(
+          (row) => `
+            <div class="table-row">
+              <span>${row.subject}</span>
+              <span>${statusBadge(row.status)}</span>
+              <span>${row.marks}</span>
+            </div>
+          `
+        )
+        .join("")}
+    </div>
+  `;
+}
+
+function renderDeadlineCard(reminders, assignments) {
+  if (!studentDeadlineCard) {
+    return;
+  }
+
+  const item =
+    reminders[0] ||
+    assignments
+      .map((assignment) => ({
+        title: assignment.title,
+        dueDate: assignment.dueDate
+      }))
+      .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))[0];
+
+  if (!item) {
+    studentDeadlineCard.innerHTML = "<p class='meta'>No upcoming deadlines right now.</p>";
+    return;
+  }
+
+  const hours = Math.max(
+    0,
+    Math.round((new Date(item.dueDate).getTime() - Date.now()) / (1000 * 60 * 60))
+  );
+  const dueText = hours <= 48 ? `Due in ${Math.max(1, Math.ceil(hours / 24))} day(s)` : formatDate(item.dueDate);
+
+  studentDeadlineCard.innerHTML = `
+    <article class="mark-card">
+      <div class="card-top">
+        <h3>${item.title}</h3>
+        <span class="status-pill status-alert">Deadline</span>
+      </div>
+      <p class="meta">${dueText}</p>
+    </article>
+  `;
+}
+
 function getUrgencyLabel(dueDate, status) {
   if (status === "submitted" || status === "graded") {
     return null;
@@ -178,6 +371,10 @@ function getUrgencyLabel(dueDate, status) {
 }
 
 function applyAssignmentFilters() {
+  if (!assignmentsContainer || !assignmentSearch || !assignmentFilter) {
+    return;
+  }
+
   const query = assignmentSearch.value.trim().toLowerCase();
   const selectedStatus = assignmentFilter.value;
 
@@ -194,6 +391,23 @@ function applyAssignmentFilters() {
   });
 
   renderAssignments(filtered);
+}
+
+function applyInitialFilters() {
+  if (!assignmentsContainer) {
+    return;
+  }
+
+  if (studentView === "submit" && assignmentFilter) {
+    assignmentFilter.value = "pending";
+  }
+
+  if (assignmentSearch && assignmentFilter) {
+    applyAssignmentFilters();
+    return;
+  }
+
+  renderAssignments(allAssignments);
 }
 
 async function handleUpload(event) {
@@ -223,5 +437,10 @@ async function handleUpload(event) {
 
 loadDashboard();
 
-assignmentSearch.addEventListener("input", applyAssignmentFilters);
-assignmentFilter.addEventListener("change", applyAssignmentFilters);
+if (assignmentSearch) {
+  assignmentSearch.addEventListener("input", applyAssignmentFilters);
+}
+
+if (assignmentFilter) {
+  assignmentFilter.addEventListener("change", applyAssignmentFilters);
+}

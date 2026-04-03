@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Alerts</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body data-role="admin" data-admin-view="alerts">
+    <div class="page-shell">
+      <aside class="sidebar">
+        <h2>OAS Admin</h2>
+        <p id="adminWelcomeText">Welcome</p>
+        <button class="btn btn-secondary full-width" id="logoutBtn">Logout</button>
+      </aside>
+      <main class="main-content">
+        <header class="page-header">
+          <div>
+            <p class="eyebrow">Admin</p>
+            <h1>Announcements and Alerts</h1>
+            <p class="page-copy">Publish alerts, warnings, and announcements for students or all users.</p>
+          </div>
+        </header>
+        <section class="stats-grid" id="adminStatsGrid"></section>
+        <section class="panel">
+          <div class="panel-header"><h2>Create Student Alert</h2></div>
+          <form id="alertForm" class="grid-form">
+            <label>Title<input type="text" name="title" required /></label>
+            <label>
+              Type
+              <select name="type">
+                <option value="announcement">Announcement</option>
+                <option value="warning">Warning</option>
+                <option value="deadline">Deadline</option>
+              </select>
+            </label>
+            <label class="full-span">Message<textarea name="message" rows="4" required></textarea></label>
+            <label>
+              Target
+              <select name="targetRole">
+                <option value="student">Students</option>
+                <option value="teacher">Teachers</option>
+                <option value="all">Everyone</option>
+              </select>
+            </label>
+            <label>Expires At<input type="datetime-local" name="expiresAt" /></label>
+            <button class="btn btn-primary" type="submit">Publish Alert</button>
+          </form>
+          <p id="adminMessage" class="message"></p>
+        </section>
+      </main>
+    </div>
+    <script src="/js/api.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/admin.js"></script>
+  </body>
+</html>

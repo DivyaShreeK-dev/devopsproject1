@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Marks</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body data-role="student" data-student-view="marks">
+    <div class="page-shell">
+      <aside class="sidebar">
+        <h2>OAS Student</h2>
+        <p id="welcomeText">Welcome</p>
+        <button class="btn btn-secondary full-width" id="logoutBtn">Logout</button>
+      </aside>
+
+      <main class="main-content">
+        <section class="dashboard-hero student-theme">
+          <div class="dashboard-hero-top">
+            <h1>Welcome <span id="studentHeroName">Student</span></h1>
+          </div>
+          <div class="dashboard-hero-strip">
+            <h2>Student Dashboard</h2>
+          </div>
+          <div class="quick-grid">
+            <a class="quick-card" href="/dashboard.html"><span class="quick-circle">Overview</span></a>
+            <a class="quick-card" href="/student-assignments.html"><span class="quick-circle">Assignments</span></a>
+            <a class="quick-card" href="/student-submit.html"><span class="quick-circle">Submit Work</span></a>
+            <a class="quick-card" href="/student-marks.html"><span class="quick-circle">My Marks</span></a>
+          </div>
+        </section>
+
+        <header class="page-header">
+          <div>
+            <p class="eyebrow">Marks Overview</p>
+            <h1>Review your performance</h1>
+            <p class="page-copy">Check your marks, feedback, and academic progress in one place.</p>
+          </div>
+        </header>
+
+        <section id="statsSection" class="stats-grid"></section>
+
+        <section class="panel" id="marksSection">
+          <div class="panel-header">
+            <h2>Marks Overview</h2>
+          </div>
+          <div id="marksOverview" class="marks-list"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/dashboard.js"></script>
+  </body>
+</html>

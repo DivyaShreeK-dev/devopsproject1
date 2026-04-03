@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Activity</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body data-role="admin" data-admin-view="activity">
+    <div class="page-shell">
+      <aside class="sidebar">
+        <h2>OAS Admin</h2>
+        <p id="adminWelcomeText">Welcome</p>
+        <button class="btn btn-secondary full-width" id="logoutBtn">Logout</button>
+      </aside>
+      <main class="main-content">
+        <header class="page-header">
+          <div>
+            <p class="eyebrow">Admin</p>
+            <h1>Platform Activity</h1>
+            <p class="page-copy">Analyze users, submissions, grading counts, and recent platform activity.</p>
+          </div>
+        </header>
+        <section class="stats-grid" id="adminStatsGrid"></section>
+        <section class="panel">
+          <div class="panel-header"><h2>Platform Activity</h2></div>
+          <canvas id="adminActivityChart" height="180"></canvas>
+        </section>
+        <section class="panel">
+          <div class="panel-header"><h2>Recent Submission Activity</h2></div>
+          <div id="adminRecentSubmissions" class="teacher-assignment-list"></div>
+        </section>
+      </main>
+    </div>
+    <script src="/js/api.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/admin.js"></script>
+  </body>
+</html>

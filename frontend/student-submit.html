@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Submit Work</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body data-role="student" data-student-view="submit">
+    <div class="page-shell">
+      <aside class="sidebar">
+        <h2>OAS Student</h2>
+        <p id="welcomeText">Welcome</p>
+        <button class="btn btn-secondary full-width" id="logoutBtn">Logout</button>
+      </aside>
+
+      <main class="main-content">
+        <section class="dashboard-hero student-theme">
+          <div class="dashboard-hero-top">
+            <h1>Welcome <span id="studentHeroName">Student</span></h1>
+          </div>
+          <div class="dashboard-hero-strip">
+            <h2>Student Dashboard</h2>
+          </div>
+          <div class="quick-grid">
+            <a class="quick-card" href="/dashboard.html"><span class="quick-circle">Overview</span></a>
+            <a class="quick-card" href="/student-assignments.html"><span class="quick-circle">Assignments</span></a>
+            <a class="quick-card" href="/student-submit.html"><span class="quick-circle">Submit Work</span></a>
+            <a class="quick-card" href="/student-marks.html"><span class="quick-circle">My Marks</span></a>
+          </div>
+        </section>
+
+        <header class="page-header">
+          <div>
+            <p class="eyebrow">Submit Work</p>
+            <h1>Upload your assignments</h1>
+            <p class="page-copy">Open an assignment card and upload your PDF or DOC file directly from this page.</p>
+          </div>
+        </header>
+
+        <section id="reminderBanner" class="reminder-banner hidden"></section>
+
+        <section class="panel" id="assignmentsSection">
+          <div class="panel-header">
+            <h2>Ready For Submission</h2>
+            <div class="toolbar">
+              <input id="assignmentSearch" type="search" placeholder="Search assignments..." />
+              <select id="assignmentFilter">
+                <option value="pending">Pending</option>
+                <option value="all">All Status</option>
+                <option value="submitted">Submitted</option>
+                <option value="graded">Graded</option>
+              </select>
+            </div>
+          </div>
+          <div id="assignmentsContainer" class="assignment-grid"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/dashboard.js"></script>
+  </body>
+</html>

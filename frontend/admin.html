@@ -11,85 +11,87 @@
       <aside class="sidebar">
         <h2>OAS Admin</h2>
         <p id="adminWelcomeText">Welcome</p>
+        <nav class="sidebar-nav">
+          <a class="sidebar-link active" href="/admin.html">Dashboard</a>
+          <a class="sidebar-link" href="/admin-users.html">Users Management</a>
+          <a class="sidebar-link" href="/admin-alerts.html">Announcements</a>
+          <a class="sidebar-link" href="/admin-activity.html">Activity Logs</a>
+          <a class="sidebar-link" href="/admin-add-user.html">Add User</a>
+        </nav>
         <button class="btn btn-secondary full-width" id="logoutBtn">Logout</button>
       </aside>
 
       <main class="main-content">
-        <header class="page-header">
+        <header class="topbar">
           <div>
             <p class="eyebrow">Admin Dashboard</p>
-            <h1>Manage platform activity and student alerts</h1>
-            <p class="page-copy">Monitor users, review submission flow, and publish announcement alerts for students.</p>
+            <h1>Welcome <span id="adminHeroName">Admin</span></h1>
+          </div>
+          <div class="inline-actions">
+            <a class="btn btn-secondary" href="/admin-alerts.html">Create Announcement</a>
+            <a class="btn btn-primary" href="/admin-add-user.html">Add User</a>
           </div>
         </header>
 
         <section class="stats-grid" id="adminStatsGrid"></section>
 
-        <section class="panel">
-          <div class="panel-header">
-            <h2>Create Student Alert</h2>
-          </div>
-          <form id="alertForm" class="grid-form">
-            <label>
-              Title
-              <input type="text" name="title" required />
-            </label>
-            <label>
-              Type
-              <select name="type">
-                <option value="announcement">Announcement</option>
-                <option value="warning">Warning</option>
-                <option value="deadline">Deadline</option>
-              </select>
-            </label>
-            <label class="full-span">
-              Message
-              <textarea name="message" rows="4" required></textarea>
-            </label>
-            <label>
-              Target
-              <select name="targetRole">
-                <option value="student">Students</option>
-                <option value="teacher">Teachers</option>
-                <option value="all">Everyone</option>
-              </select>
-            </label>
-            <label>
-              Expires At
-              <input type="datetime-local" name="expiresAt" />
-            </label>
-            <button class="btn btn-primary" type="submit">Publish Alert</button>
-          </form>
-          <p id="adminMessage" class="message"></p>
-        </section>
-
-        <section class="panel">
-          <div class="panel-header">
-            <h2>Users</h2>
-            <div class="toolbar">
-              <input id="adminUserSearch" type="search" placeholder="Search users..." />
-              <select id="adminRoleFilter">
-                <option value="all">All Roles</option>
-                <option value="student">Student</option>
-                <option value="teacher">Teacher</option>
-                <option value="admin">Admin</option>
-              </select>
+        <section class="admin-grid">
+          <section class="panel panel-wide">
+            <div class="panel-header">
+              <h2>Platform Activity</h2>
             </div>
-          </div>
-          <div id="adminUsers" class="teacher-assignment-list"></div>
+            <canvas id="adminActivityChart" height="220"></canvas>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2>User Distribution</h2>
+            </div>
+            <div id="adminDistribution" class="marks-list"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Quick Actions</h2>
+            </div>
+            <div class="quick-list">
+              <a class="quick-list-item" href="/admin-users.html">Manage Users</a>
+              <a class="quick-list-item" href="/admin-add-user.html">Create New User</a>
+              <a class="quick-list-item" href="/admin-alerts.html">Post Announcement</a>
+              <a class="quick-list-item" href="/admin-activity.html">Review Activity</a>
+            </div>
+          </section>
         </section>
 
-        <section class="panel">
-          <div class="panel-header">
-            <h2>Recent Submission Activity</h2>
-          </div>
-          <div id="adminRecentSubmissions" class="teacher-assignment-list"></div>
+        <section class="admin-grid">
+          <section class="panel panel-wide">
+            <div class="panel-header">
+              <h2>Recent Submission Activity</h2>
+            </div>
+            <div id="adminRecentSubmissions" class="teacher-assignment-list"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Admin Notes</h2>
+            </div>
+            <div class="marks-list">
+              <article class="mark-card">
+                <h3>Monitor User Roles</h3>
+                <p class="meta">Use the Users Management page to promote teachers, add students, and control admin access.</p>
+              </article>
+              <article class="mark-card">
+                <h3>Track Daily Activity</h3>
+                <p class="meta">Use the activity and alerts pages to watch grading movement and publish notices quickly.</p>
+              </article>
+            </div>
+          </section>
         </section>
       </main>
     </div>
 
     <script src="/js/api.js"></script>
     <script src="/js/common.js"></script>
-    <script src="/js/admin.js"></script>
+    <script src="/js/adminHome.js"></script>
   </body>
 </html>
