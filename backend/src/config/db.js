@@ -4,10 +4,14 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const connectDB = async () => {
-  const mongoUri = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/oas_system";
-
-  await mongoose.connect(mongoUri);
-  console.log("MongoDB connected");
+  try {
+    await mongoose.connect("mongodb+srv://divyashree:Divya@3058@cluster0.hiqlka2.mongodb.net/mydb");
+    console.log("MongoDB Atlas connected");
+  } catch (error) {
+    console.error("DB connection error:", error.message);
+    process.exit(1);
+  }
 };
+
 
 module.exports = connectDB;
